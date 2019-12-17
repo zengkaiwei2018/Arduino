@@ -14,7 +14,7 @@ void loop()
         delay(500);
         digitalWrite(ledpin,LOW);//熄灭数字13 口LED
         delay(500);
-        Serial.println("Hello World!");//显示“Hello World！”字符串
+        Serial.println("H");//显示“Hello World！”字符串
     }
     if(val=='E')//判断接收到的指令或字符是否是“R”。
     {//如果接收到的是“R”字符
