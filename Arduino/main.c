@@ -1,51 +1,105 @@
-int val;//定义变量val
-int ledpin=13;//定义数字接口13
-void setup()
-{
-    Serial.begin(9600);//设置波特率为9600。
-    pinMode(ledpin,OUTPUT);//设置数字13 口为输出接口。
+#define ERROR -1
+typedef bool MODE;
+void setup() {
+    // 设置的代码放这, 运行一次:
+    pinMode(13,OUTPUT);
 }
-void loop()
+const int Moers[36][5]={{0,1,3,3,3},
+    {1,0,0,0,3},
+    {1,0,1,0,3},
+    {1,0,0,3,3},
+    {0,3,3,3,3},
+    {0,0,1,0,3},
+    {1,1,0,3,3},
+    {0,0,0,0,3},
+    {0,0,3,3,3},
+    {0,1,1,1,3},
+    {1,0,1,3,3},
+    {0,1,0,0,3},
+    {1,1,3,3,3},
+    {1,0,3,3,3},
+    {1,1,1,0,0},
+    {0,1,1,0,3},
+    {1,1,0,1,3},
+    {0,1,0,3,3},
+    {0,0,0,3,3},
+    {1,3,3,3,3},
+    {0,0,1,3,3},
+    {0,0,0,1,3},
+    {0,1,1,3,3},
+    {1,0,0,1,3},
+    {1,0,1,1,3},
+    {1,1,0,0,3},
+    {0,1,1,1,1},
+    {0,0,1,1,1},
+    {0,0,0,1,1},
+    {0,0,0,0,1},
+    {0,0,0,0,0},
+    {1,0,0,0,0},
+    {1,1,0,0,0},
+    {1,1,1,0,0},
+    {1,1,1,1,0},
+    {1,1,1,1,1}};
+const char achar[36]={'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'};
+//control light
+void Con_Light(bool sq)
 {
-    val=Serial.read();//读取PC 机发送给Arduino 的指令或字符，并将该指令或字符赋给val
-    if(val=='H')//判断接收到的指令或字符是否是“R”。
-    {//如果接收到的是“R”字符
-        digitalWrite(ledpin,HIGH);//点亮数字13 口LED。
-        delay(500);
-        digitalWrite(ledpin,LOW);//熄灭数字13 口LED
-        delay(500);
-        Serial.println("H");//显示“Hello World！”字符串
+    //sq = 0 :short  1000ms
+    //sq = 1 :long   3000ms
+    //digitalWrite(13,HIGH)
+    //delay( /ms)
+    if(sq)  //long
+    {
+        digitalWrite(13,LOW);
+        delay(100);
+        digitalWrite(13,HIGH);
+        delay(2000);
     }
-    if(val=='E')//判断接收到的指令或字符是否是“R”。
-    {//如果接收到的是“R”字符
-        digitalWrite(ledpin,HIGH);//点亮数字13 口LED。
+    else
+    {
+        digitalWrite(13,LOW);
+        delay(100);
+        digitalWrite(13,HIGH);
         delay(500);
-        digitalWrite(ledpin,LOW);//熄灭数字13 口LED
-        delay(500);
-        Serial.println("Hello World!");//显示“Hello World！”字符串
     }
-    if(val=='L')//判断接收到的指令或字符是否是“R”。
-    {//如果接收到的是“R”字符
-        digitalWrite(ledpin,HIGH);//点亮数字13 口LED。
-        delay(500);
-        digitalWrite(ledpin,LOW);//熄灭数字13 口LED
-        delay(500);
-        Serial.println("Hello World!");//显示“Hello World！”字符串
+}
+
+//find word you want put
+int FindLine(char a)
+{
+    int i =0;
+    while(a!='#')
+    {
+        if(achar[i] == a)
+        {
+            return i;
+        }
+        i++;
     }
-    if(val=='L')//判断接收到的指令或字符是否是“R”。
-    {//如果接收到的是“R”字符
-        digitalWrite(ledpin,HIGH);//点亮数字13 口LED。
-        delay(500);
-        digitalWrite(ledpin,LOW);//熄灭数字13 口LED
-        delay(500);
-        Serial.println("Hello World!");//显示“Hello World！”字符串
+    return ERROR;  //stand for error;
+}
+void Put_Light(int j)
+{
+    for(int i=0;i<5;i++)
+    {
+        if(Moers[j][i] == 3) break;
+        else
+        {
+            Con_Light(Moers[j][i]);
+        }
     }
-    if(val=='O')//判断接收到的指令或字符是否是“R”。
-    {//如果接收到的是“R”字符
-        digitalWrite(ledpin,HIGH);//点亮数字13 口LED。
-        delay(500);
-        digitalWrite(ledpin,LOW);//熄灭数字13 口LED
-        delay(500);
-        Serial.println("Hello World!");//显示“Hello World！”字符串
+}
+void end()
+{
+    digitalWrite(13,HIGH);
+    delay(10000);
+}
+void loop() {
+    // 主代码, 重复运行:
+    char s[5] = "HELL0#";
+    for(int i=0;i<5;i++)
+    {
+        Put_Light(FindLine(s[i]));
     }
+    end();
 }
